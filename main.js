@@ -5,20 +5,21 @@ const React = {
         if(atribut !== undefined && atribut !== null) {
             Object.entries(atribut).forEach(att => {
                 
-                let val1 = att[0], val2;
+                let prop1 = att[0], prop2;
                 if(typeof(att[1]) === 'object') {
                      
-                    val2 = generator(att[1]);
-                    val2.forEach(item => {
-                        element.setAttribute(val1, item);
+                    prop2 = generatorProp2(att[1]);
+                    prop2.forEach(item => {
+                        element.setAttribute(prop1, item);
                     });
                     
                 } else { 
-                    val2  = att[1];
-                    element[val1] = val2;
+                    prop2  = att[1];
+                    element[prop1] = prop2;
                 }
             });
         }
+
         if(typeof(content) === 'object') {
             content.forEach(item => {
                 (typeof(item) === 'string')
@@ -30,7 +31,26 @@ const React = {
 
             return element;
         }
+
         if(content !== undefined && content !== null) { element.innerHTML = content;}
+
+        function generatorProp2(obj) {
+            let properties = [];
+        
+            for(key in obj) {
+                let a = key + ": " + obj[key];
+                
+                let index = a.match( /[A-Z]/);
+                index = (index !== null)? index.index : -1;
+                if(index >= 0) {
+                    let b = a.split('');
+                    b.splice(index, 0, '-');
+                    properties.push(b.join('').toLowerCase());
+                } else properties.push(a);
+            }
+        
+            return properties;
+        }
 
         return element;
     },
@@ -39,24 +59,6 @@ const React = {
         node.appendChild(app);
     }
 };
-
-function generator(obj) {
-    let value = [];
-
-    for(key in obj) {
-        let a = key + ": " + obj[key];
-        
-        let index = a.match( /[A-Z]/);
-        index = (index !== null)? index.index : -1;
-        if(index >= 0) {
-            let b = a.split('');
-            b.splice(index, 0, '-');
-            value.push(b.join('').toLowerCase());
-        } else value.push(a);
-    }
-
-    return value;
-}
 
 
 const app = 
